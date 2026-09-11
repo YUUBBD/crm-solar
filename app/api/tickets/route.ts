@@ -1,0 +1,4 @@
+import { prisma } from "@/lib/prisma"; import { ok,fail,date } from "../_utils";
+export async function GET(){return ok(await prisma.serviceTicket.findMany({orderBy:{createdAt:"desc"},include:{customer:true,project:true}}));}
+export async function POST(req:Request){try{const b=await req.json();if(!b.customerId||!b.title)return fail("Cliente y título son obligatorios");return ok(await prisma.serviceTicket.create({data:{customerId:b.customerId,projectId:b.projectId||null,title:b.title,description:b.description||null,priority:b.priority||"MEDIUM",scheduledAt:date(b.scheduledAt)}}),201)}catch(e){return fail("No se pudo crear el reclamo",500)}}
+export async function PATCH(req:Request){try{const b=await req.json();const{id,...d}=b;const closed=d.status==="CLOSED";return ok(await prisma.serviceTicket.update({where:{id},data:{...d,scheduledAt:date(d.scheduledAt),closedAt:closed?new Date():null}}))}catch(e){return fail("No se pudo actualizar el reclamo",500)}}

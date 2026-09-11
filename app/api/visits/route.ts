@@ -1,0 +1,4 @@
+import { prisma } from "@/lib/prisma"; import { ok,fail,date,num } from "../_utils";
+export async function GET(){return ok(await prisma.technicalVisit.findMany({orderBy:{scheduledAt:"desc"},include:{customer:true}}));}
+export async function POST(req:Request){try{const b=await req.json();if(!b.customerId)return fail("Cliente obligatorio");return ok(await prisma.technicalVisit.create({data:{customerId:b.customerId,scheduledAt:date(b.scheduledAt),roofType:b.roofType||null,shading:b.shading||null,phase:b.phase||null,panelArea:num(b.panelArea),inverterLocation:b.inverterLocation||null,notes:b.notes||null}}),201)}catch(e){return fail("No se pudo crear la visita",500)}}
+export async function PATCH(req:Request){try{const b=await req.json();const{id,...d}=b;return ok(await prisma.technicalVisit.update({where:{id},data:{...d,scheduledAt:date(d.scheduledAt),panelArea:num(d.panelArea)}}))}catch(e){return fail("No se pudo actualizar la visita",500)}}

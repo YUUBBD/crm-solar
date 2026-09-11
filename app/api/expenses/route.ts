@@ -1,0 +1,4 @@
+import { prisma } from "@/lib/prisma"; import { ok,fail,date,num } from "../_utils";
+export async function GET(){return ok(await prisma.expense.findMany({orderBy:{expenseAt:"desc"},include:{owner:true,project:true}}));}
+export async function POST(req:Request){try{const b=await req.json();if(!b.category||!b.description||!b.amount)return fail("Completá categoría, descripción e importe");return ok(await prisma.expense.create({data:{category:b.category,description:b.description,amount:num(b.amount)||0,expenseAt:date(b.expenseAt)||new Date(),ownerId:b.ownerId||null,projectId:b.projectId||null,status:b.status||"PENDING"}}),201)}catch(e){return fail("No se pudo registrar el gasto",500)}}
+export async function PATCH(req:Request){try{const b=await req.json();const{id,...d}=b;return ok(await prisma.expense.update({where:{id},data:{...d,amount:num(d.amount)||0,expenseAt:date(d.expenseAt)}}))}catch(e){return fail("No se pudo actualizar el gasto",500)}}

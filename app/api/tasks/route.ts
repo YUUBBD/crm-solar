@@ -1,0 +1,4 @@
+import { prisma } from "@/lib/prisma"; import { ok,fail,date } from "../_utils";
+export async function GET(){return ok(await prisma.task.findMany({orderBy:{dueAt:"asc"},include:{customer:true,owner:true}}));}
+export async function POST(req:Request){try{const b=await req.json();if(!b.title||!b.dueAt)return fail("Título y fecha son obligatorios");return ok(await prisma.task.create({data:{title:b.title,dueAt:date(b.dueAt)!,customerId:b.customerId||null,ownerId:b.ownerId||null,priority:b.priority||"MEDIUM",notes:b.notes||null}}),201)}catch(e){return fail("No se pudo crear la tarea",500)}}
+export async function PATCH(req:Request){try{const b=await req.json();const{id,...d}=b;return ok(await prisma.task.update({where:{id},data:{...d,dueAt:date(d.dueAt)}}))}catch(e){return fail("No se pudo actualizar la tarea",500)}}
