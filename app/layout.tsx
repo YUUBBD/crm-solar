@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Sidebar />
         <main className="main-wrap">
           <div className="mobile-bar">
-            <b>☀ Solar CRM</b>
+            <b>☀ E. Solarok</b>
             <span>Administrador</span>
           </div>
           {children}
