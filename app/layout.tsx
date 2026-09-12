@@ -1,17 +1,17 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 
-const spaceGrotesk = Space_Grotesk({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-display",
+  variable: "--font-sans",
   display: "swap",
 });
 
-const inter = Inter({
+const manropeDisplay = Manrope({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html lang="es" className={`${manrope.variable} ${manropeDisplay.variable}`}>
       <body>
         <Sidebar />
         <main className="main-wrap">
