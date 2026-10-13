@@ -1,11 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 
-const databaseUrl = process.env.DATABASE_URL ?? process.env.CRM_PRISMA_DATABASE_URL ?? process.env.CRM_POSTGRES_URL ?? process.env.CRM_DATABASE_URL;
-if (databaseUrl && !process.env.DATABASE_URL) process.env.DATABASE_URL = databaseUrl;
-if (databaseUrl && !process.env.DIRECT_URL) process.env.DIRECT_URL = databaseUrl;
+const env = process.env as Record<string, string | undefined>;
+const databaseUrl = env["DATABASE_URL"] ?? env["CRM_PRISMA_DATABASE_URL"] ?? env["CRM_POSTGRES_URL"] ?? env["CRM_DATABASE_URL"];
+if (databaseUrl && !env["DATABASE_URL"]) env["DATABASE_URL"] = databaseUrl;
+if (databaseUrl && !env["DIRECT_URL"]) env["DIRECT_URL"] = databaseUrl;
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient();
+const prismaOptions = databaseUrl ? { datasources: { db: { url: databaseUrl } } } : undefined;
+export const prisma = globalForPrisma.prisma ?? new PrismaClient(prismaOptions);
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
